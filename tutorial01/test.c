@@ -22,8 +22,8 @@ static int test_pass = 0;
 
 static void test_parse_null() {
     lept_value v;
-    v.type = LEPT_FALSE;
-    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "null"));
+    v.type = LEPT_FALSE; //仅仅只是初始化，无其他作用
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "null"));  //解析是不是null类型
     EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
 }
 
