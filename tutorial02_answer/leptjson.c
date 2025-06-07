@@ -33,7 +33,7 @@ static int lept_parse_literal(lept_context* c, lept_value* v, const char* litera
 static int lept_parse_number(lept_context* c, lept_value* v) {
     const char* p = c->json;
     if (*p == '-') p++;
-    if (*p == '0') p++;
+    if (*p == '0') p++;  /* 并没有处理0123这种情况 */
     else {
         if (!ISDIGIT1TO9(*p)) return LEPT_PARSE_INVALID_VALUE;
         for (p++; ISDIGIT(*p); p++);

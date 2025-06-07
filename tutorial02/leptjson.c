@@ -45,7 +45,7 @@ static int lept_parse_null(lept_context* c, lept_value* v) {
 static int lept_parse_number(lept_context* c, lept_value* v) {
     char* end;
     /* \TODO validate number */
-    v->n = strtod(c->json, &end);
+    v->n = strtod(c->json, &end); /* 把字符串转换为浮点数，end保存指针，指向转换数字的下一个字符位置 */
     if (c->json == end)
         return LEPT_PARSE_INVALID_VALUE;
     c->json = end;

@@ -101,6 +101,7 @@ static void test_parse_invalid_value() {
 
     /* invalid number */
     TEST_ERROR(LEPT_PARSE_INVALID_VALUE, "+0");
+    TEST_ERROR(LEPT_PARSE_INVALID_VALUE, "0123");
     TEST_ERROR(LEPT_PARSE_INVALID_VALUE, "+1");
     TEST_ERROR(LEPT_PARSE_INVALID_VALUE, ".123"); /* at least one digit before '.' */
     TEST_ERROR(LEPT_PARSE_INVALID_VALUE, "1.");   /* at least one digit after '.' */
