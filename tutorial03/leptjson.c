@@ -20,6 +20,16 @@ typedef struct {
     size_t size, top;
 }lept_context;
 
+/**
+ * @brief realloc的用法
+ * a) expanding or contracting the existing area pointed to by ptr, if possible. 
+ * The contents of the area remain unchanged up to the lesser of the new and old sizes. 
+ * If the area is expanded, the contents of the new part of the array are undefined.
+ * b) allocating a new memory block of size new_size bytes, 
+ * copying memory area with size equal the lesser of the new and the old sizes, 
+ * and freeing the old block.
+ */
+
 static void* lept_context_push(lept_context* c, size_t size) {
     void* ret;
     assert(size > 0);
@@ -28,7 +38,7 @@ static void* lept_context_push(lept_context* c, size_t size) {
             c->size = LEPT_PARSE_STACK_INIT_SIZE;
         while (c->top + size >= c->size)
             c->size += c->size >> 1;  /* c->size * 1.5 */
-        c->stack = (char*)realloc(c->stack, c->size);
+        c->stack = (char*)realloc(c->stack, c->size); /* 类似于vector扩容，当size不够的时候进行1.5倍扩容，并且把内存搬到 */
     }
     ret = c->stack + c->top;
     c->top += size;

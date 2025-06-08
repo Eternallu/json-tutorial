@@ -8,6 +8,7 @@
 #include <math.h>    /* HUGE_VAL */
 #include <stdlib.h>  /* NULL, malloc(), realloc(), free(), strtod() */
 #include <string.h>  /* memcpy() */
+#include <stdio.h>   /* printf() */
 
 #ifndef LEPT_PARSE_STACK_INIT_SIZE
 #define LEPT_PARSE_STACK_INIT_SIZE 256
@@ -19,8 +20,8 @@
 #define PUTC(c, ch)         do { *(char*)lept_context_push(c, sizeof(char)) = (ch); } while(0)
 
 typedef struct {
-    const char* json;
-    char* stack;
+    const char* json; /* 用于保存当前读取的字符串 */
+    char* stack; /* 用于保存所有的字符串，栈 */
     size_t size, top;
 }lept_context;
 
@@ -98,13 +99,13 @@ static int lept_parse_string(lept_context* c, lept_value* v) {
     for (;;) {
         char ch = *p++;
         switch (ch) {
-            case '\"':
-                len = c->top - head;
+            case '\"': /* 遇到" 表示结束了*/
+                len = c->top - head; /* 记录一共PUTC了几个字符 */
                 lept_set_string(v, (const char*)lept_context_pop(c, len), len);
                 c->json = p;
                 return LEPT_PARSE_OK;
             case '\\':
-                switch (*p++) {
+                switch (*p++) {  /* 这里把转义字符给解析并去掉了 */
                     case '\"': PUTC(c, '\"'); break;
                     case '\\': PUTC(c, '\\'); break;
                     case '/':  PUTC(c, '/' ); break;
@@ -119,9 +120,9 @@ static int lept_parse_string(lept_context* c, lept_value* v) {
                 }
                 break;
             case '\0':
-                c->top = head;
+                c->top = head; /* 遇到\0表示字符串没有结束 */
                 return LEPT_PARSE_MISS_QUOTATION_MARK;
-            default:
+            default: 
                 if ((unsigned char)ch < 0x20) { 
                     c->top = head;
                     return LEPT_PARSE_INVALID_STRING_CHAR;
@@ -151,6 +152,7 @@ int lept_parse(lept_value* v, const char* json) {
     c.size = c.top = 0;
     lept_init(v);
     lept_parse_whitespace(&c);
+    /* printf("lept_parse: json = %s\n", c.json); */
     if ((ret = lept_parse_value(&c, v)) == LEPT_PARSE_OK) {
         lept_parse_whitespace(&c);
         if (*c.json != '\0') {
@@ -213,5 +215,6 @@ void lept_set_string(lept_value* v, const char* s, size_t len) {
     memcpy(v->u.s.s, s, len);
     v->u.s.s[len] = '\0';
     v->u.s.len = len;
+    /* printf("lept_set_string: %s, len = %d\n", v->u.s.s, len); */
     v->type = LEPT_STRING;
 }
