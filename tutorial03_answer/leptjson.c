@@ -19,6 +19,9 @@
 #define ISDIGIT1TO9(ch)     ((ch) >= '1' && (ch) <= '9')
 #define PUTC(c, ch)         do { *(char*)lept_context_push(c, sizeof(char)) = (ch); } while(0)
 
+/*
+解析转义字符用的临时字符串栈，动态扩容的栈
+*/
 typedef struct {
     const char* json; /* 用于保存当前读取的字符串 */
     char* stack; /* 用于保存所有的字符串，栈 */
